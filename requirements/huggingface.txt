@@ -88,7 +88,7 @@ tokenizers==0.19.1
     # via
     #   -c ././deps/constraints.txt
     #   transformers
-torch==2.4.0
+torch==2.4.0+cpu
     # via -r ./huggingface.in
 tqdm==4.66.5
     # via

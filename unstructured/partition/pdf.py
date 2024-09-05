@@ -53,10 +53,6 @@ from unstructured.partition.lang import (
     prepare_languages_for_tesseract,
     tesseract_to_paddle_language,
 )
-from unstructured.partition.pdf_image.analysis.layout_dump import (
-    JsonLayoutDumper,
-    ObjectDetectionLayoutDumper,
-)
 from unstructured.partition.pdf_image.form_extraction import run_form_extraction
 from unstructured.partition.pdf_image.pdf_image_utils import (
     check_element_types_to_extract,
@@ -591,10 +587,10 @@ def _partition_pdf_or_image_local(
             f"(currently {pdf_image_dpi}).",
         )
 
-    pdfminer_drawer  = None
+    pdfminer_drawer = None
     od_model_drawer = None
     ocr_drawer = None
-    od_model_layout_dumper: Optional[ObjectDetectionLayoutDumper] = None
+    od_model_layout_dumper = None
     skip_bboxes = env_config.ANALYSIS_BBOX_SKIP
     skip_dump_od = env_config.ANALYSIS_DUMP_OD_SKIP
 
@@ -626,11 +622,6 @@ def _partition_pdf_or_image_local(
                     else:
                         analyzed_image_output_dir_path = str(Path.cwd() / "annotated")
                 os.makedirs(analyzed_image_output_dir_path, exist_ok=True)
-                if not skip_dump_od:
-                    od_model_layout_dumper = ObjectDetectionLayoutDumper(
-                        layout=inferred_document_layout,
-                        model_name=hi_res_model_name,
-                    )
             # NOTE(christine): merged_document_layout = extracted_layout + inferred_layout
             merged_document_layout = merge_inferred_with_extracted_layout(
                 inferred_document_layout=inferred_document_layout,
@@ -789,10 +780,6 @@ def _partition_pdf_or_image_local(
         out_elements.extend(forms)
 
     if analysis and not skip_dump_od:
-        json_layout_dumper = JsonLayoutDumper(
-            filename=filename,
-            save_dir=analyzed_image_output_dir_path,
-        )
         if od_model_layout_dumper:
             json_layout_dumper.add_layout_dumper(od_model_layout_dumper)
         json_layout_dumper.process()
